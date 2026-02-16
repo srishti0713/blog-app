@@ -115,7 +115,7 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
 	try {
-		res.clearCookie("jwt", { httpOnly: true, sameSite: "strict" });
+		res.clearCookie("jwt", { httpOnly: true, sameSite: "none" });
 		return res.status(200).json({ message: "Logged out Successfully" });
 	} catch (error) {
 		console.log("ERROR :: CONTROLLER :: logout :: ", error.message);
@@ -126,7 +126,7 @@ export const currentUser = async (req, res) => {
 	try {
 		return res.status(200).json(req.user);
 	} catch (error) {
-		console.log("ERROR :: CONTROLLER :: register :: ", error.message);
+		console.log("ERROR :: CONTROLLER :: currentUser :: ", error.message);
 		return res.status(500).json({ message: "Internal server error" });
 	}
 };
