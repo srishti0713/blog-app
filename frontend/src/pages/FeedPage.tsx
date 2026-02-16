@@ -13,6 +13,7 @@ import {
 	DialogTrigger,
 	DialogClose,
 } from "@/components/ui/dialog";
+import moment from "moment";
 
 interface Blog {
 	_id: string;
@@ -21,6 +22,7 @@ interface Blog {
 	image?: {
 		url: string;
 	};
+	createdAt: string;
 	user: {
 		_id: string;
 		email: string;
@@ -97,98 +99,112 @@ const FeedPage = () => {
 	}
 
 	return (
-        <div className="bg-linear-to-br from-white via-brand-50 to-purple-50  py-24">
-		<div className=" mx-auto py-8 max-w-3xl px-4  space-y-6 ">
-			{blogs.length === 0 && (
-				<p className="text-center text-muted-foreground">
-					No blog posts yet.
-				</p>
-			)}
-			
+		<div className="bg-linear-to-br from-white via-brand-50 to-purple-50  py-24">
+			<div className=" mx-auto py-8 max-w-3xl px-4  space-y-6 ">
+				{blogs.length === 0 && (
+					<p className="text-center text-muted-foreground">
+						No blog posts yet.
+					</p>
+				)}
 
-			{blogs.map((blog) => (
-                <>
-				<div key={blog._id} className="space-y-4 border-b pb-6 bg-white shadow-lg rounded-lg p-8">
-					<div className="flex items-center justify-between ">
-						<div className="flex items-center gap-3">
-							<Avatar className="h-8 w-8 ">
-								<AvatarImage
-									src={blog.user?.avatar?.url || ""}
-                                    
-								/>
-								<AvatarFallback>
-									{blog.user?.email?.charAt(0).toUpperCase()}
-								</AvatarFallback>
-							</Avatar>
+				{blogs.map((blog) => (
+					<>
+						<div
+							key={blog._id}
+							className="space-y-4 border-b pb-6 bg-white shadow-lg rounded-lg p-8"
+						>
+							<div className="flex items-center justify-between ">
+								<div className="flex items-center gap-3">
+									<Avatar className="h-9 w-9 ">
+										<AvatarImage
+											src={blog.user?.avatar?.url || ""}
+										/>
+										<AvatarFallback>
+											{blog.user?.email
+												?.charAt(0)
+												.toUpperCase()}
+										</AvatarFallback>
+									</Avatar>
 
-							<span className="text-sm font-medium">
-								{blog.user?.email}
-							</span>
-						</div>
-
-						{user?._id === blog.user?._id && (
-							<Dialog>
-								<DialogTrigger asChild>
-									<Button variant="ghost" size="icon">
-										<Trash2 className="h-4 w-4 text-red-500" />
-									</Button>
-								</DialogTrigger>
-
-								<DialogContent>
-									<DialogHeader>
-										<DialogTitle>
-											Delete this post?
-										</DialogTitle>
-									</DialogHeader>
-
-									<DialogFooter>
-										<DialogClose asChild>
-											<Button variant="outline">
-												Cancel
-											</Button>
-										</DialogClose>
-
-										<Button
-											variant="destructive"
-											onClick={() =>
-												handleDelete(blog._id)
-											}
-											disabled={deletingId === blog._id}
-										>
-											{deletingId === blog._id ? (
-												<Loader2 className="h-4 w-4 animate-spin" />
-											) : (
-												"Delete"
+									<div className="flex flex-col leading-tight">
+										<span className="text-sm font-medium">
+											{blog.user?.email}
+										</span>
+										<span className="text-xs text-muted-foreground">
+											{moment(blog.createdAt).format(
+												"ll",
 											)}
-										</Button>
-									</DialogFooter>
-								</DialogContent>
-							</Dialog>
-						)}
-					</div>
+										</span>
+									</div>
+								</div>
 
-					{/* Image */}
-					{blog.image?.url && (
-						<div className="w-full flex justify-left my-4">
-							<img
-								src={blog.image.url}
-								alt={blog.title}
-								className="max-h-96 w-auto object-contain rounded-md"
-							/>
+								{user?._id === blog.user?._id && (
+									<Dialog>
+										<DialogTrigger asChild>
+											<Button variant="ghost" size="icon">
+												<Trash2 className="h-4 w-4 text-red-500" />
+											</Button>
+										</DialogTrigger>
+
+										<DialogContent>
+											<DialogHeader>
+												<DialogTitle>
+													Delete this post?
+												</DialogTitle>
+											</DialogHeader>
+
+											<DialogFooter>
+												<DialogClose asChild>
+													<Button variant="outline">
+														Cancel
+													</Button>
+												</DialogClose>
+
+												<Button
+													variant="destructive"
+													onClick={() =>
+														handleDelete(blog._id)
+													}
+													disabled={
+														deletingId === blog._id
+													}
+												>
+													{deletingId === blog._id ? (
+														<Loader2 className="h-4 w-4 animate-spin" />
+													) : (
+														"Delete"
+													)}
+												</Button>
+											</DialogFooter>
+										</DialogContent>
+									</Dialog>
+								)}
+							</div>
+							{/* Title */}
+							<h2 className="text-md font-semibold">
+								{blog.title}
+							</h2>
+
+							{/* Image */}
+							{blog.image?.url && (
+								<div className="w-full flex justify-left my-4">
+									<img
+										src={blog.image.url}
+										alt={blog.title}
+										className="max-h-96 w-auto object-contain rounded-md"
+									/>
+								</div>
+							)}
+
+							{/* Content */}
+							<p>{blog.content}</p>
 						</div>
-					)}
-
-					{/* Content */}
-					<p>{blog.content}</p>
-                    
-				</div>
-                <div className="h-px  bg-linear-to-r from-transparent  via-brand-200  to-transparent my-16"></div>
-                </>
-			))}
+						<div className="h-px  bg-linear-to-r from-transparent  via-brand-200  to-transparent my-16"></div>
+					</>
+				))}
+			</div>
 		</div>
-        </div>
 	);
-    
 };
 
 export default FeedPage;
